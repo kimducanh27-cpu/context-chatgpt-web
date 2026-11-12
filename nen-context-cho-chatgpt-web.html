@@ -90,7 +90,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-si
 <div class="wrap">
 
 <header class="hero">
-<p class="tag">Manual Context Handoff Kit for ChatGPT Web · BẢN V16</p>
+<p class="tag">Manual Context Handoff Kit for ChatGPT Web · BẢN V17</p>
 <h1>Bộ chuyển giao context thủ công giữa các chat</h1>
 <p class="standfirst">Chat dài thì <strong>gấp chặng đã xong thành 1 block ngắn</strong>, cất vào repo GitHub private, rồi mở chat mới nạp lại. Trang này chỉ còn: <strong>3 bước, 4 prompt copy nguyên văn, và 1 form gần như tự điền hết</strong> — bạn chỉ dán 2 lần (sổ gấp + đoạn chat) rồi gõ phần nội dung thật.</p>
 <div class="warn">
@@ -103,7 +103,7 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-si
 <h2>Cách dùng — 3 bước</h2>
 <ol class="steps">
 <li><h3>Chat như bình thường</h3><p>Chat tới khi <strong>một chặng việc đã khép lại</strong> (khoảng 2.500–4.000 từ cả hỏi lẫn đáp) và chat bắt đầu dài. Chưa khép lại thì chưa gấp.</p></li>
-<li><h3>Gấp bằng Prompt A ngay trong chat đó</h3><p>Tẩy <strong>password / API key / thông tin riêng thành <code>[REDACTED]</code></strong>, rồi dán <strong>Prompt A nguyên văn</strong> kèm đoạn đã tẩy và sổ gấp. Model gấp thành 1 block, <strong>tự đẩy file lên repo private</strong> và trả link commit — mở link kiểm lại mới coi là xong. Muốn tự tạo block thì dùng <a href="#tao-block">form cuối trang</a>: chỉ dán sổ + 2 tin đầu/cuối của chặng, form tự điền gần hết.</p></li>
+<li><h3>Gấp: dán Prompt A + đoạn trích ngay trong chat đó</h3><p>Model tự đọc Sổ, tự tính mã block, tự kiểm tra, rồi đẩy lên GitHub.</p></li>
 <li><h3>Mở chat mới bằng Prompt B</h3><p>Dán <strong>Prompt B nguyên văn</strong> kèm tin đầu tiên và 3 tin gần nhất. Model tự đọc các block đang current từ repo và nhắc lại bàn giao — kiểm xong mới làm tiếp. Chat cũ đổi tên <code>[ARCHIVE] &lt;dự án&gt; &lt;ngày&gt;</code>, giữ lại, không xóa. Đủ <strong>8 block</strong> thì dùng <strong>Prompt D</strong> gộp; cần lại chi tiết cũ thì theo <strong>Prompt C</strong>.</p></li>
 </ol>
 </section>
@@ -113,23 +113,41 @@ footer{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-si
 
 <div class="prompt-card">
 <div class="head"><h3><i data-lucide="scissors"></i>Prompt A · Gấp chặng thành block</h3><button class="copy-btn" data-copy="p-a" type="button">Copy prompt</button></div>
-<div class="prompt-body" id="p-a">Thông tin định danh do người dùng cấp (điền trước khi gửi):
-project_id = [MONEO]
-session_id = [S-20261110-A]
-data_repo = [kimducanh27-cpu/context-chatgpt-data]
-block_id = [CTX-MONEO-20261110-&lt;NN&gt;]
-tier = [1]
-version = [1]
-source_chat_url = [URL HOẶC CHƯA CÓ]
-tên chat cũ = [[ARCHIVE] MONEO 2026-11-10]
-điểm cắt của block gần nhất = [trích 15 đơn vị đầu của TIN KẾT THÚC của block gần nhất; ghi "không xác định được" nếu không tìm thấy]
-kiểm tra source-to-capture = [đã kiểm tra — số tin nhắn đã capture: &lt;N&gt;, anchor đầu: "&lt;...&gt;", anchor cuối: "&lt;...&gt;"]
-SỔ GẤP (fold log, bắt buộc — trừ FIRST_FOLD): [dán danh sách block đã có của dự án, mỗi dòng `mã block | source_range`; nếu đây là lần gấp đầu thì ghi "FIRST_FOLD — chưa có block nào"]
+<div class="prompt-body" id="p-a">Thông tin do người dùng cấp (chỉ 2 dòng bắt buộc — còn lại model tự điền, xem ĐỌC SỔ TỪ REPO ở dưới):
+project_id = [MÃ DỰ ÁN]
+session_id = [S-YYYYMMDD-A — chỉ điền khi khác; bỏ trống thì model tự lấy: FIRST_FOLD → S-&lt;hôm nay&gt;-A; dự án cũ → session_id của dòng FOLD gần nhất trong Sổ (cột session_id)]
+data_repo = [kimducanh27-cpu/context-chatgpt-data — mặc định này, chỉ ghi đè khi repo khác]
+source_chat_url = [URL HOẶC CHƯA CÓ — không bắt buộc; bỏ trống thì ghi "(chưa có)"]
+tên chat cũ = [[ARCHIVE] &lt;MÃ DỰ ÁN&gt; &lt;ngày&gt; — không bắt buộc; bỏ trống thì model tự đặt theo mẫu này]
+FIRST_FOLD = [ghi FIRST_FOLD nếu đây là lần gấp đầu của dự án, nếu không thì bỏ trống]
 
-LẦN GẤP ĐẦU (FIRST_FOLD): nếu đây là lần gấp đầu tiên của dự án (chưa có block nào), ghi rõ "FIRST_FOLD" vào dòng này và bỏ qua dòng điểm cắt ở trên — chặng đầu tiên bắt đầu từ tin nhắn đầu tiên của chat (start_message = FIRST_PROJECT_MESSAGE, inclusive). FIRST_FOLD chỉ hợp lệ khi fold log xác nhận chưa có block nào của dự án (đối chiếu ledger, KHÔNG phải tự khai báo) và chỉ với NN==01. Bất kỳ lần gấp nào sau đó tick FIRST_FOLD thì dừng — không tạo block.
+LẦN GẤP ĐẦU (FIRST_FOLD): nếu đây là lần gấp đầu tiên của dự án
+(chưa có block nào), ghi rõ "FIRST_FOLD" vào dòng FIRST_FOLD ở trên
+và không có điểm cắt — chặng đầu tiên bắt đầu từ tin nhắn đầu tiên
+của chat (start_message = FIRST_PROJECT_MESSAGE, inclusive). FIRST_FOLD
+chỉ hợp lệ khi SỔ GẤP.md không tồn tại trong repo HOẶC không có dòng FOLD nào (đối chiếu repo,
+KHÔNG phải tự khai báo) và chỉ với NN==01. Bất kỳ lần gấp nào sau đó
+tick FIRST_FOLD thì dừng — không tạo block. (Luật này được form gate
+thực thi — xem Form gate: gate phải kiểm NN==01, không chỉ kiểm
+ledger trống.)
+
+ĐỌC SỔ TỪ REPO (V17): trước khi làm gì khác, hãy ĐỌC file `projects/&lt;project_id&gt;/SỔ GẤP.md` trong repo dữ liệu (data_repo). Sổ này là nguồn duy nhất cho mọi giá trị sau — user KHÔNG dán Sổ nữa:
+- NN = NN Tier-1 lớn nhất (các mã CTX-&lt;project_id&gt;-&lt;ngày&gt;-&lt;NN&gt;) trong Sổ + 1, pad 2 chữ số (vd 15 → 16); Sổ chưa tồn tại + FIRST_FOLD → NN = 01.
+- block_id = CTX-&lt;project_id&gt;-&lt;YYYYMMDD hôm nay&gt;-&lt;NN&gt;.
+- created_at / updated_at = giờ hiện tại (+07).
+- canonical_packet_version = field 12 của file block gần nhất (mở `projects/&lt;project_id&gt;/current/&lt;block_id&gt;-v&lt;version&gt;.md` của block đó, lấy mã block + version từ dòng FOLD gần nhất trong Sổ) + 1; FIRST_FOLD → 1.
+- điểm cắt của block gần nhất = phía phải (15 đơn vị đầu của tin kết thúc) của source_range của dòng FOLD gần nhất trong Sổ; FIRST_FOLD thì không có điểm cắt (chặng bắt đầu từ tin đầu tiên của chat).
+- session_id: nếu user bỏ trống thì FIRST_FOLD → S-&lt;hôm nay&gt;-A; dự án cũ → session_id của dòng FOLD gần nhất trong Sổ (cột session_id).
+- tier = 1, version = 1, status = current, parent_block_ids = (chưa có), original_archive_link = (chính là Phần 2 của file này).
+Nếu KHÔNG đọc được Sổ: (a) Sổ chưa tồn tại và user KHÔNG ghi FIRST_FOLD → hỏi user xác nhận đây có phải lần gấp đầu không, MỘT lần; user xác nhận → coi như FIRST_FOLD; user không xác nhận / không trả lời → dừng lại, dòng THIẾU SỔ GẤP. (b) Không có quyền repo / data_repo sai → hỏi user dán các dòng Sổ (mỗi dòng `mã block | source_range`) MỘT lần; nếu user cũng không dán được thì dừng lại, dòng THIẾU SỔ GẤP. Trên Sổ dán tay, model chỉ suy được NN/điểm cắt/source_range — hỏi user thêm session + bản gói hiện tại (MỘT lần), hoặc tự lấy cả hai từ file block gần nhất trong current/ nếu repo vẫn đọc được. Nếu hoàn toàn không có quyền repo thì bước ĐẨY cũng sẽ thất bại → dòng KHÔNG ĐẨY ĐƯỢC ở bước đẩy. Không tạo block trong cả hai trường hợp.
 
 KHUNG TỪ CHỐI — SAO CHÉP NGUYÊN VĂN (V10, fix test 17; V12 thêm dòng KHÔNG ĐẨY ĐƯỢC):
-Khi phải từ chối, sao chép NGUYÊN VĂN đúng một dòng dưới đây — chỉ thay &lt;lý do&gt; bằng lý do cụ thể, và &lt;mã block cũ&gt; bằng mã block đã gấp (chỉ dòng ĐÃ GẤP RỒI; dòng KHÔNG ĐẨY ĐƯỢC chỉ thay &lt;lý do&gt;). KHÔNG thêm/bớt bất kỳ ký tự nào, KHÔNG thêm tiêu đề (kể cả "FOLD GATE:"), KHÔNG thêm giải thích, KHÔNG đổi thứ tự từ, KHÔNG gộp nhiều dòng. Dòng trả về CHỈ là dòng đó.
+Khi phải từ chối, sao chép NGUYÊN VĂN đúng một dòng dưới đây — chỉ
+thay &lt;lý do&gt; bằng lý do cụ thể, và &lt;mã block cũ&gt; bằng mã block đã
+gấp (chỉ dòng ĐÃ GẤP RỒI; dòng KHÔNG ĐẨY ĐƯỢC chỉ thay &lt;lý do&gt;).
+KHÔNG thêm/bớt bất kỳ ký tự nào, KHÔNG thêm tiêu đề (kể cả
+"FOLD GATE:"), KHÔNG thêm giải thích, KHÔNG đổi thứ tự từ, KHÔNG
+gộp nhiều dòng. Dòng trả về CHỈ là dòng đó.
 THIẾU NGUỒN | Lý do: &lt;lý do&gt;
 KHÔNG XÁC ĐỊNH ĐƯỢC ĐIỂM CẮT | Lý do: &lt;lý do&gt;
 CHƯA NÊN GẤP | Lý do: &lt;lý do&gt;
@@ -138,24 +156,75 @@ THIẾU SỔ GẤP | Lý do: &lt;lý do&gt;
 ĐÃ GẤP RỒI | Block: &lt;mã block cũ&gt; | Lý do: &lt;lý do&gt;
 KHÔNG ĐẨY ĐƯỢC | Lý do: &lt;lý do&gt;
 
-KIỂM TRA BẢO MẬT (trước khi dán): đoạn trích KHÔNG được chứa mật khẩu, API key, token đăng nhập, dữ liệu khách hàng hay PII. Thứ nào không tẩy được thì thay bằng [REDACTED] — bảo toàn ý định, không bắt buộc giữ nguyên văn dữ liệu phải che. Đoạn trích dán kèm đây là SANITIZED_RAW_SOURCE (bản đã làm sạch) — bản gốc chưa tẩy (ORIGINAL_SOURCE) chỉ nằm trong chat cũ hoặc kho bí mật, KHÔNG bao giờ được dán vào đây và KHÔNG được gọi bản đã che là "nguyên văn đầy đủ". Nội dung đã đẩy lên GitHub nằm trong git history vĩnh viễn — xóa file không xóa được lịch sử; secret/PII đã đẩy thì coi như đã lộ và phải xoay nó. Repo dữ liệu phải là repo PRIVATE — không bao giờ đẩy block, sổ gấp hay bản raw lên repo public.
+KIỂM TRA BẢO MẬT (trước khi dán): đoạn trích KHÔNG được chứa mật
+khẩu, API key, token đăng nhập, dữ liệu khách hàng hay PII. Thứ nào
+không tẩy được thì thay bằng [REDACTED] — bảo toàn ý định, không
+bắt buộc giữ nguyên văn dữ liệu phải che. Đoạn trích dán kèm đây là
+SANITIZED_RAW_SOURCE (bản đã làm sạch) — bản gốc chưa tẩy
+(ORIGINAL_SOURCE) chỉ nằm trong chat cũ hoặc kho bí mật, KHÔNG bao
+giờ được dán vào đây và KHÔNG được gọi bản đã che là "nguyên văn
+đầy đủ". Nội dung đã đẩy lên GitHub nằm trong git history vĩnh
+viễn — xóa file không xóa được lịch sử; secret/PII đã đẩy thì coi
+như đã lộ và phải xoay nó. Repo dữ liệu phải là repo PRIVATE —
+không bao giờ đẩy block, sổ gấp hay bản raw lên repo public.
 
-ĐOẠN TRÍCH ĐÃ LÀM SẠCH [SANITIZED_RAW_SOURCE] (do người dùng dán kèm — bắt buộc):
-[DÁN TOÀN BỘ ĐOẠN TRÍCH CỦA CHẶNG VÀO ĐÂY — bản SANITIZED_RAW_SOURCE đã bảo toàn ở bước 2 của Phần 6, từ điểm cắt của block gần nhất đến cuối chặng, ĐÃ CHIA THÀNH CÁC PHẦN 2a/2b/2c NẾU DÀI (việc chia chunk được định nghĩa ngay tại bước gửi prompt này). Nếu không dán đoạn trích, model PHẢI dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng THIẾU NGUỒN.]
+ĐOẠN TRÍCH ĐÃ LÀM SẠCH [SANITIZED_RAW_SOURCE] (do người dùng dán
+kèm — bắt buộc):
+[DÁN TOÀN BỘ ĐOẠN TRÍCH ĐÃ LÀM SẠCH TỪ ĐIỂM CẮT ĐẾN CUỐI CHẶNG
+CẦN GẤP VÀO ĐÂY, ĐÃ CHIA THÀNH CÁC PHẦN 2a/2b/2c NẾU DÀI.
+Nếu không dán đoạn trích, model PHẢI dừng lại và chỉ trả về đúng
+một dòng trong KHUNG TỪ CHỐI ở trên: dòng THIẾU NGUỒN.]
 
-Hãy chỉ đọc ĐOẠN TRÍCH ĐÃ DÁN Ở TRÊN (phần hội thoại PHÁT SINH KỂ TỪ điểm cắt của block gần nhất đến mốc [TRÍCH CÂU CUỐI CỦA CHẶNG CẦN GẤP]), và chỉ khi chặng đó đã hoàn thành (TUYỆT ĐỐI KHÔNG tóm tắt lại các block note bàn giao cũ ở đầu chat và KHÔNG tóm tắt phần việc đang làm dở sau mốc kết thúc). Tuyệt đối không dựa vào phần lịch sử chat mà bạn còn nhìn thấy ngoài đoạn trích: phần đó có thể đã bị cửa sổ trượt cắt mất một phần.
-Nếu không xác định được điểm cắt của block gần nhất (và đây không phải FIRST_FOLD) thì KHÔNG TẠO BLOCK — hãy dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng KHÔNG XÁC ĐỊNH ĐƯỢC ĐIỂM CẮT.
-Nếu chặng này đang dở giữa chừng (đang debug lỗi chưa ra nguyên nhân hoặc chưa chốt phương án), hãy dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng CHƯA NÊN GẤP.
-Nếu dòng kiểm tra source-to-capture ở trên TRỐNG, hoặc ghi "chưa kiểm tra", hoặc số tin nhắn / anchor không khớp đoạn trích đã dán, hãy dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng CHƯA KIỂM TRA NGUỒN.
-(Không tạo block. Dòng kiểm tra này là tự khai báo của user — kit không có cách xác minh độc lập rằng bạn đã đối chiếu theo thứ tự tin nhắn; đừng điền nếu chưa làm.)
-KIỂM TRA TRÙNG (V10, fix test 9): TRƯỚC KHI viết block, đối chiếu source_range của chặng này (15 đơn vị đầu của tin mở đầu → 15 đơn vị đầu của tin kết thúc) với từng dòng trong SỔ GẤP đã dán ở trên. Nếu cả hai phía đều trùng với source_range của một block đã có thì chặng này ĐÃ GẤP RỒI — hãy dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng ĐÃ GẤP RỒI (điền &lt;mã block cũ&gt; là mã block đã có đó). Không tạo block. Nếu dòng SỔ GẤP ở trên TRỐNG (và đây không phải FIRST_FOLD) thì cũng dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng THIẾU SỔ GẤP. Không tạo block.
-Nếu chặng đã khép lại, hãy viết MỘT block Tier-1 cho riêng chặng đó theo đúng mẫu 18 trường dưới đây. Chỉ dùng thông tin có trong đoạn trích đã dán. Không bịa. Chỗ nào không chắc thì ghi "không chắc". Trường nào không có giá trị thì ghi "(chưa có)".
-Giữ nguyên văn: quyết định đã chốt KÈM lý do, đường dẫn file kèm số dòng, chữ ký hàm, dòng code quan trọng, câu lỗi chính xác, con số chính xác, tham chiếu tin nhắn, diễn biến mục tiêu. Tóm tắt ngắn phần giải thích dài và suy luận. Bỏ phần tán gẫu.
-Quy tắc source_range: source_range là "15 đơn vị đầu của TIN MỞ ĐẦU → 15 đơn vị đầu của TIN KẾT THÚC" của đoạn gấp (đếm theo đơn vị cách trắng). Nếu tin mở đầu hoặc tin kết thúc có ÍT HƠN 15 đơn vị thì dùng TOÀN VĂN tin nhắn đó làm quote của phía đó — không đệm, không mượn đơn vị từ tin kề bên.
+Hãy chỉ đọc ĐOẠN TRÍCH ĐÃ DÁN Ở TRÊN (phần hội thoại PHÁT SINH KỂ
+TỪ điểm cắt của block gần nhất đến mốc [TRÍCH CÂU CUỐI CỦA CHẶNG
+CẦN GẤP]), và chỉ khi chặng đó đã hoàn thành (TUYỆT ĐỐI KHÔNG tóm
+tắt lại các block note bàn giao cũ ở đầu chat và KHÔNG tóm tắt phần
+việc đang làm dở sau mốc kết thúc). Nếu không xác định được điểm cắt
+của block gần nhất (và đây không phải FIRST_FOLD) thì KHÔNG TẠO
+BLOCK — hãy dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ
+CHỐI ở trên: dòng KHÔNG XÁC ĐỊNH ĐƯỢC ĐIỂM CẮT.
+Nếu chặng này đang dở giữa chừng (đang debug lỗi chưa ra nguyên nhân
+hoặc chưa chốt phương án), hãy dừng lại và chỉ trả về đúng một dòng
+trong KHUNG TỪ CHỐI ở trên: dòng CHƯA NÊN GẤP.
+TỰ KIỂM TRA ĐOẠN TRÍCH (V17): model TỰ kiểm tra đoạn trích đã dán với lịch sử chat này (nơi đoạn trích được trích ra) — KHÔNG chờ user khai dòng kiểm tra nữa. Đếm số tin nhắn trong chặng (từ điểm cắt đến mốc kết thúc) và đối chiếu anchor đầu (15 đơn vị đầu của tin mở đầu) + anchor cuối (15 đơn vị đầu của tin kết thúc) với đúng các tin đó trong lịch sử chat, theo thứ tự tin nhắn (không chỉ so tổng số — tổng số không bắt được tin thiếu ở giữa). Kiểm tra xong thì báo kết quả trong câu trả lời (số tin + 2 anchor).
+- Nếu đoạn trích KHÔNG khớp lịch sử chat (thiếu tin ở giữa, sai số tin, sai anchor) → dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng THIẾU NGUỒN (dán lại đoạn trích cho đúng).
+- Nếu model KHÔNG nhìn thấy được lịch sử chat cũ (đầu chat đã bị cắt trên gói Free, hoặc Prompt A chạy ở chat khác) → không thể tự kiểm tra: dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng CHƯA KIỂM TRA NGUỒN — kèm lời nhắn user tự đối chiếu theo thứ tự tin nhắn rồi dán lại Prompt A kèm dòng kiểm tra sau (mẫu cũ: "đã kiểm tra — số tin nhắn đã capture: &lt;N&gt;, anchor đầu: "&lt;...&gt;", anchor cuối: "&lt;...&gt;").
+- Nếu user dán lại Prompt A kèm dòng kiểm tra đã khai (đúng mẫu trên), dán ngay sau phần header: kiểm tra dòng đó có khớp đoạn trích không (số tin + 2 anchor); khớp thì coi kiểm tra đã xong và tiếp tục viết block — KHÔNG từ chối nữa; không khớp thì từ chối CHƯA KIỂM TRA NGUỒN lại.
+(Không tạo block khi chưa kiểm tra xong.)
+KIỂM TRA TRÙNG (V10, fix test 9): TRƯỚC KHI viết block, đối chiếu
+source_range của chặng này (15 đơn vị đầu của tin mở đầu → 15 đơn
+vị đầu của tin kết thúc) với từng dòng trong SỔ GẤP đã ĐỌC TỪ REPO ở trên.
+Nếu cả hai phía đều trùng với source_range của một block đã có thì
+chặng này ĐÃ GẤP RỒI — hãy dừng lại và chỉ trả về đúng một dòng
+trong KHUNG TỪ CHỐI ở trên: dòng ĐÃ GẤP RỒI (điền &lt;mã block cũ&gt; là
+mã block đã có đó). Không tạo block. Nếu không đọc được SỔ GẤP (và user cũng không dán được ở bước
+ĐỌC SỔ TỪ REPO, và đây không phải FIRST_FOLD) thì cũng dừng lại
+và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng THIẾU SỔ GẤP. Không tạo
+block.
+Nếu chặng đã khép lại, hãy viết MỘT block Tier-1 cho riêng chặng đó
+theo đúng mẫu 18 trường dưới đây. Chỉ dùng thông tin có trong đoạn
+trích đã dán. Không bịa. Chỗ nào không chắc thì ghi "không chắc".
+Giữ nguyên văn: quyết định đã chốt KÈM lý do, đường dẫn file kèm số
+dòng, chữ ký hàm, dòng code quan trọng, câu lỗi chính xác, con số
+chính xác, tham chiếu tin nhắn, diễn biến mục tiêu. Tóm tắt ngắn phần
+giải thích dài và suy luận. Bỏ phần tán gẫu.
 
-[GHI ĐÈ — AI VIẾT NHÃN NÀY: khi một quyết định, ràng buộc, việc đang dở, con số, đường dẫn/code, nguồn hoặc phiên bản trong chặng này THAY ĐỔI một mục đã chốt trong block cũ, hãy ghi rõ trong đúng trường đó: "[GHI ĐÈ &lt;mã block cũ&gt;] &lt;nội dung mới&gt;". Nhãn này do MODEL viết ngay trong Prompt A khi mục thay đổi. Không có nhãn ghi đè thì quyết định cũ vẫn thắng. Khi ghi đè một mục trong block Tier-2, phải ghi kèm sub-item identifier — mã block Tier-1 nguồn và tên trường mà quyết định đó lấy từ đó. Khi ghi đè một mục trong block Tier-3, ghi kèm sub-item identifier — mã block Tier-2 nguồn + tên trường, và mã block Tier-1 gốc nếu quyết định đó bắt nguồn từ Tier-1. Khi ghi đè mục "Việc đang dở", phải ghi thêm "(cần user xác nhận ở bước kiểm tra)" — ghi đè trên việc đang dở KHÔNG tự động mang sang phiên chat mới.]
+[GHI ĐÈ — AI VIẾT NHÃN NÀY (v8): khi một quyết định, ràng buộc,
+việc đang dở, con số, đường dẫn/code, nguồn hoặc phiên bản trong
+chặng này THAY ĐỔI một mục đã chốt trong block cũ, hãy ghi rõ
+trong đúng trường đó: "[GHI ĐÈ &lt;mã block cũ&gt;] &lt;nội dung mới&gt;".
+Không có nhãn ghi đè thì quyết định cũ vẫn thắng. Khi ghi đè một
+mục trong block Tier-2, phải ghi kèm sub-item identifier — mã block
+Tier-1 nguồn và tên trường mà quyết định đó lấy từ đó. Khi ghi đè
+một mục trong block Tier-3 (v9, P2-11), ghi kèm sub-item identifier
+— mã block Tier-2 nguồn + tên trường, và mã block Tier-1 gốc nếu
+quyết định đó bắt nguồn từ Tier-1. Khi ghi đè mục "Việc đang dở",
+phải ghi thêm "(cần user xác nhận ở bước kiểm tra)" — ghi đè trên
+việc đang dở KHÔNG tự động mang sang phiên chat mới.]
 
-MẪU 18 TRƯỜNG — điền đúng mẫu này, không rút gọn, không đổi tên trường, không đổi thứ tự:
+(Các trường 1–12 model tự điền — từ header ở trên (project_id, session_id, source_chat_url nếu user điền) + thông tin đã đọc/suy ra (ĐỌC SỔ TỪ REPO + đoạn trích); user không điền trực tiếp vào mẫu nữa.)
+MẪU 18 TRƯỜNG — điền đúng mẫu này, không rút gọn, không đổi tên
+trường, không đổi thứ tự:
 <span class="tpl-slot" data-tpl="t1">1. project_id: [MONEO]
 2. session_id: [S-20261110-A]
 3. block_id: [CTX-MONEO-20261110-&lt;NN&gt;]
@@ -175,7 +244,23 @@ MẪU 18 TRƯỜNG — điền đúng mẫu này, không rút gọn, không đ�
 17. Dữ kiện nguyên văn: [nguyên văn, hoặc (chưa có)]
 18. Đã bỏ đi cố ý: [ghi rõ thứ đã bỏ, hoặc (chưa có)]</span>
 
-ĐẨY LÊN GITHUB (V12): sau khi viết xong block ở trên, ĐẨY NGAY block này lên repo dữ liệu (data_repo) — không đợi user copy tay: tạo file projects/&lt;project_id&gt;/current/&lt;block_id&gt;-v&lt;version&gt;.md với nội dung = (1) block 18 trường vừa viết + (2) Phần 2 = SANITIZED_RAW_SOURCE của chặng đã gấp, dưới header "PHẦN 2 — SANITIZED_RAW_SOURCE (bản đã làm sạch; [REDACTED] = đoạn cố ý thiếu, không phải nguyên văn đầy đủ)"; cập nhật SỔ GẤP.md của dự án (projects/&lt;project_id&gt;/SỔ GẤP.md) bằng cách thêm 1 dòng sự kiện FOLD (lấy nội dung SỔ GẤP đã dán ở trên + dòng mới); commit CẢ HAI file trong 1 commit, message "Add block &lt;block_id&gt;-v&lt;version&gt;"; trả về link commit + SHA + đường dẫn file làm bằng chứng. Nếu không đẩy được (không có quyền repo, data_repo trống/sai, lỗi công cụ) thì dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên: dòng KHÔNG ĐẨY ĐƯỢC. Block KHÔNG được lưu; KHÔNG được nói là đã đẩy. Một câu nói "đã đẩy" mà KHÔNG kèm link commit + SHA thì KHÔNG tính là đã đẩy.</div>
+ĐẨY LÊN GITHUB (V12): sau khi viết xong block ở trên, ĐẨY NGAY
+block này lên repo dữ liệu (data_repo) — không đợi user copy tay:
+tạo file `projects/&lt;project_id&gt;/current/&lt;block_id&gt;-v&lt;version&gt;.md`
+với nội dung = (1) block 18 trường vừa viết + (2) Phần 2 =
+SANITIZED_RAW_SOURCE của chặng đã gấp, dưới header "PHẦN 2 —
+SANITIZED_RAW_SOURCE (bản đã làm sạch; [REDACTED] = đoạn cố ý
+thiếu, không phải nguyên văn đầy đủ)"; cập nhật SỔ GẤP.md của dự án
+(`projects/&lt;project_id&gt;/SỔ GẤP.md`) bằng cách thêm 1 dòng sự kiện
+FOLD (lấy nội dung SỔ GẤP đã ĐỌC TỪ REPO ở trên + dòng mới); commit CẢ HAI
+file trong 1 commit, message `Add block &lt;block_id&gt;-v&lt;version&gt;`;
+trả về link commit + SHA + đường dẫn file làm bằng chứng. Nếu không
+đẩy được (không có quyền repo, data_repo trống/sai, lỗi công cụ) thì
+dừng lại và chỉ trả về đúng một dòng trong KHUNG TỪ CHỐI ở trên:
+dòng KHÔNG ĐẨY ĐƯỢC. Block KHÔNG được lưu; KHÔNG được nói là đã
+đẩy. Một câu nói "đã đẩy" mà KHÔNG kèm link commit + SHA thì KHÔNG
+tính là đã đẩy.
+Nếu user dán kèm một block đã ráp sẵn (từ form), ĐẨY block đó nguyên văn, không viết lại và không sửa NN/mã block của nó.</div>
 </div>
 
 <div class="prompt-card">
