@@ -5,67 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="data:," />
-<title>Bộ chuyển giao context thủ công giữa các chat — Manual Context Handoff Kit for ChatGPT Web · V15</title>
+<title>Bộ chuyển giao context thủ công giữa các chat — Manual Context Handoff Kit for ChatGPT Web · V16</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
-button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]),textarea{min-height:2.25rem}
 :root{--bg:#f7f4ee;--surface:#fffdf9;--surface-2:#efe9dd;--ink:#1c1a16;--ink-2:#55503f;--line:#d8d0bf;--accent:#c2410c;--accent-ink:#9a3412;--accent-soft:#fdeadd;--teal:#0f766e;--teal-soft:#e0f2ef;--code-bg:#211d17;--code-ink:#f3ead9;--warn-bg:#fdf3e3;--warn-line:#e5c07b}
 @media(prefers-color-scheme:dark){:root{--bg:#171512;--surface:#201d19;--surface-2:#2a2620;--ink:#f0ebdf;--ink-2:#b3ab97;--line:#3d382e;--accent:#fb923c;--accent-ink:#fdba74;--accent-soft:#3a2415;--teal:#2dd4bf;--teal-soft:#123330;--code-bg:#100e0b;--code-ink:#f3ead9;--warn-bg:#33270f;--warn-line:#8a6d2f}}
-*{box-sizing:border-box}html{scroll-behavior:smooth}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.65}
-.wrap{max-width:880px;margin:0 auto;padding:0 20px 64px}a{color:var(--accent-ink)}h1,h2,h3{line-height:1.25}
-h2{font-size:1.4rem;font-weight:800;margin:0 0 6px}
-h3{font-size:1.05rem;font-weight:700;margin:22px 0 6px}p{margin:8px 0}.sub{color:var(--ink-2)}section{margin-top:44px}
-header.hero{padding:36px 0 4px}.hero .tag{font-family:"IBM Plex Mono",monospace;font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--teal);text-transform:uppercase}
-.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);font-weight:800;margin:10px 0 10px;letter-spacing:-.01em}
-.hero .standfirst{font-size:1.05rem;color:var(--ink-2);max-width:62ch;margin:0}.hero .standfirst strong{color:var(--ink)}
-.warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:14px 18px;margin-top:18px}.warn p{margin:0}
-.steps{list-style:none;counter-reset:st;margin:16px 0 0;padding:0;display:grid;gap:12px}
-.steps li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px 64px;position:relative}
-.steps li::before{content:counter(st);position:absolute;left:18px;top:16px;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.6;-webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:0 14px 56px}
+@media(min-width:720px){.wrap{padding:0 20px 72px}}
+a{color:var(--accent-ink)}
+h1,h2,h3{line-height:1.25}
+h2{font-size:1.3rem;font-weight:800;margin:0 0 6px}
+h3{font-size:1.02rem;font-weight:700;margin:0}
+p{margin:8px 0}.sub{color:var(--ink-2)}
+section{margin-top:36px}
+header.hero{padding:26px 0 2px}
+.hero .tag{font-family:"IBM Plex Mono",monospace;font-size:.75rem;font-weight:600;letter-spacing:.03em;color:var(--teal);text-transform:uppercase;margin:0}
+.hero h1{font-size:clamp(1.55rem,6vw,2.4rem);font-weight:800;margin:8px 0;letter-spacing:-.01em}
+.hero .standfirst{font-size:1rem;color:var(--ink-2);margin:0}.hero .standfirst strong{color:var(--ink)}
+.warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:12px 14px;margin-top:14px;font-size:.93rem}.warn p{margin:0}
+.chips{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;flex-wrap:wrap;gap:8px;padding:10px 0;margin-top:14px}
+.chips a{display:inline-flex;align-items:center;min-height:40px;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);text-decoration:none;font-weight:600;font-size:.88rem}
+.steps{list-style:none;counter-reset:st;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.steps li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 14px 13px 54px;position:relative}
+.steps li::before{content:counter(st);position:absolute;left:14px;top:13px;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.9rem}
 @media(prefers-color-scheme:dark){.steps li::before{color:#1c1005}}
-.steps h3{margin:2px 0 4px}.steps p{margin:0;color:var(--ink-2);font-size:.95rem}.steps p strong{color:var(--ink)}
-.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:16px;overflow:hidden}
-.prompt-card .head{padding:16px 18px 0;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
-.prompt-card h3{margin:0;font-size:1.05rem;display:flex;align-items:center;gap:8px}.prompt-card h3 svg{width:18px;height:18px;color:var(--accent)}
-.prompt-body{margin:14px 18px 18px;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px;font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.6;white-space:pre-wrap;word-break:break-word}
-.prompt-card .mini{padding:0 18px 18px}.prompt-card .mini ol{margin:10px 0 0;padding-left:22px}.prompt-card .mini li{margin:6px 0}
-.copy-btn{appearance:none;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font:inherit;font-weight:600;font-size:.88rem;border-radius:9px;padding:6px 16px;cursor:pointer;min-height:38px}
-@media(prefers-color-scheme:dark){.copy-btn{color:#1c1005}} .copy-btn:active{transform:scale(.97)}.copy-btn:disabled{opacity:.45;cursor:not-allowed;background:var(--surface-2);border-color:var(--line);color:var(--ink-2)}.copy-btn.done{background:var(--teal);border-color:var(--teal);color:#fff}
-.composer{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}
-.composer .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:620px){.composer .grid{grid-template-columns:1fr}}
-.composer label{display:block;font-weight:600;font-size:.88rem;margin-bottom:5px}.composer label .hint{font-weight:400;color:var(--ink-2);font-size:.8rem}
-.composer input[type="text"],.composer textarea,.composer select{width:100%;font:inherit;font-size:.93rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 12px}
-.composer textarea{min-height:64px;resize:vertical}.composer .full{grid-column:1/-1}
-.composer .out{margin-top:16px;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px;font-family:"IBM Plex Mono",monospace;font-size:.82rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;min-height:120px}
-.composer .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}.composer .note{font-size:.85rem;color:var(--ink-2)}
-.composer .auto{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-2);background:var(--surface-2);border-radius:9px;padding:9px 12px;margin-bottom:14px;word-break:break-word}
+.steps h3{margin:1px 0 3px}.steps p{margin:0;color:var(--ink-2);font-size:.93rem}.steps p strong{color:var(--ink)}
+.prompt-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-top:14px;overflow:hidden}
+.prompt-card .head{padding:14px 14px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+@media(min-width:720px){.prompt-card .head{padding:16px 18px 0}}
+.prompt-card h3{flex:1 1 100%;display:flex;align-items:center;gap:8px}
+@media(min-width:620px){.prompt-card h3{flex:1 1 auto}}
+.prompt-card h3 svg{width:18px;height:18px;color:var(--accent);flex:none}
+.prompt-body{margin:12px 14px 14px;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:14px;font-family:"IBM Plex Mono",monospace;font-size:.8rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:62vh;overflow:auto;overscroll-behavior:contain}
+@media(min-width:720px){.prompt-body{margin:14px 18px 18px;padding:16px}}
+.prompt-card.closed .prompt-body,.prompt-card.closed .mini{display:none}
+.prompt-card .mini{padding:0 14px 14px}
+@media(min-width:720px){.prompt-card .mini{padding:0 18px 18px}}
+.prompt-card .mini ol{margin:8px 0 0;padding-left:20px}.prompt-card .mini li{margin:5px 0}
+.copy-btn{appearance:none;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font:inherit;font-weight:600;font-size:.9rem;border-radius:10px;padding:8px 16px;cursor:pointer;min-height:44px;flex:1 1 auto}
+@media(min-width:620px){.copy-btn{flex:0 0 auto}}
+@media(prefers-color-scheme:dark){.copy-btn{color:#1c1005}}
+.copy-btn:active{transform:scale(.98)}
+.copy-btn:disabled{opacity:.45;cursor:not-allowed;background:var(--surface-2);border-color:var(--line);color:var(--ink-2)}
+.copy-btn.done{background:var(--teal);border-color:var(--teal);color:#fff}
+.copy-btn.big{font-size:1rem;min-height:52px;padding:10px 22px}
+.toggle-btn{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:.88rem;border-radius:10px;padding:8px 14px;cursor:pointer;min-height:44px;flex:1 1 auto}
+@media(min-width:620px){.toggle-btn{flex:0 0 auto}}
+.mini-btn{appearance:none;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-weight:600;font-size:.85rem;border-radius:9px;padding:6px 12px;cursor:pointer;min-height:40px}
+.mini-btn.done{background:var(--teal);border-color:var(--teal);color:#fff}
+.composer{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px 0;margin-top:14px}
+@media(min-width:720px){.composer{padding:20px 20px 0}}
+.composer .grid{display:grid;grid-template-columns:1fr;gap:13px}
+@media(min-width:720px){.composer .grid{grid-template-columns:1fr 1fr}.composer .full{grid-column:1/-1}}
+.composer label{display:block;font-weight:600;font-size:.9rem;margin-bottom:5px}
+.composer label .hint{font-weight:400;color:var(--ink-2);font-size:.8rem}
+.composer input[type="text"],.composer textarea,.composer select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:48px}
+.composer textarea{min-height:58px;resize:vertical;line-height:1.5}
+.composer textarea#f-raw{min-height:170px}
+.composer textarea#f-existing{min-height:84px}
+.composer input[type="checkbox"]{width:20px;height:20px;vertical-align:-4px;margin-right:6px;accent-color:var(--accent)}
+.composer summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;font-size:.9rem}
+.composer .out{margin-top:14px;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:14px;font-family:"IBM Plex Mono",monospace;font-size:.8rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;min-height:110px;max-height:46vh;overflow:auto;overscroll-behavior:contain}
+.composer .note{font-size:.86rem;color:var(--ink-2);margin:10px 0 0}
+.composer .auto{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-2);background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-bottom:14px;overflow-wrap:anywhere}
+.composer .auto #f-code{color:var(--ink);font-weight:600}
+.actionbar{position:sticky;bottom:0;display:flex;gap:10px;align-items:center;margin:14px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);border-radius:0 0 14px 14px}
+@media(min-width:720px){.actionbar{margin:14px -20px 0;padding-left:20px;padding-right:20px}}
+.actionbar .copy-btn{flex:1 1 auto}
+@media(min-width:620px){.actionbar .copy-btn{flex:0 0 auto}}
+.bar-status{font-size:.85rem;color:var(--ink-2);flex:1 1 auto}
 code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--surface-2);border-radius:5px;padding:1px 6px}
 .prompt-body code{background:transparent;padding:0}
-footer{margin-top:48px;border-top:1px solid var(--line);padding-top:18px;font-size:.85rem;color:var(--ink-2)}
+footer{margin-top:40px;border-top:1px solid var(--line);padding-top:16px;font-size:.85rem;color:var(--ink-2)}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header class="hero">
-<p class="tag">Manual Context Handoff Kit for ChatGPT Web · BẢN V15</p>
+<p class="tag">Manual Context Handoff Kit for ChatGPT Web · BẢN V16</p>
 <h1>Bộ chuyển giao context thủ công giữa các chat</h1>
-<p class="standfirst">Chat dài thì <strong>gấp chặng đã xong thành 1 block ngắn</strong>, cất vào repo GitHub private của bạn, rồi mở chat mới nạp lại bằng block đó. Chỉ có 3 bước ở dưới, 4 prompt để copy nguyên văn, và 1 form tạo block đã rút gọn.</p>
+<p class="standfirst">Chat dài thì <strong>gấp chặng đã xong thành 1 block ngắn</strong>, cất vào repo GitHub private, rồi mở chat mới nạp lại. Trang này chỉ còn: <strong>3 bước, 4 prompt copy nguyên văn, và 1 form gần như tự điền hết</strong> — bạn chỉ dán 2 lần (sổ gấp + đoạn chat) rồi gõ phần nội dung thật.</p>
 <div class="warn">
-<p><strong>V15 đổi luật của kit:</strong> form tự điền nhiều hơn (NN, ngày, version, status tự sinh từ sổ cấp ID và ngày hôm nay; session_id và số bản gói mới bạn tự ghi) và thu gọn các ô ít dùng. Vì luật đã đổi, <strong>mọi kết quả thử nghiệm của các bản trước không còn áp dụng</strong> — dùng bản này thì kiểm lại từ đầu.</p>
+<p><strong>V16 đổi cách điền form:</strong> trang tự nhớ mã dự án / session_id / số bản gói theo từng dự án trên máy này; dán sổ là session_id tự lấy từ dòng cuối sổ; source_range tự điền từ 2 ô dán nguyên văn tin mở đầu + tin kết thúc — khỏi đếm 15 đơn vị. Cổng kiểm tra giữ nguyên như bản trước: ô nội dung để trống là khóa Copy (chỉ “(chưa có)” do bạn tự gõ mới tính là không có), tin ngắn hơn 15 đơn vị phải tự tick xác nhận, lần gấp đầu phải tự tick và sổ trống thì trang không xác minh được. Mẫu block 18 trường và 4 prompt <strong>giữ nguyên từng chữ</strong>.</p>
 </div>
 </header>
+<nav class="chips" aria-label="Đi nhanh"><a href="#cach-dung">Cách dùng</a><a href="#prompts">Các prompt</a><a href="#tao-block">Tạo block</a></nav>
 
 <section id="cach-dung">
 <h2>Cách dùng — 3 bước</h2>
 <ol class="steps">
-<li><h3>Chat như bình thường</h3><p>Chat trong 1 chat cho tới khi <strong>một chặng việc đã khép lại</strong> (đã chốt xong một việc, khoảng 2.500–4.000 từ cả hỏi lẫn đáp) và chat bắt đầu dài. Chưa khép lại thì chưa gấp.</p></li>
-<li><h3>Gấp ngay trong chat đó bằng Prompt A</h3><p>Copy đoạn chat của chặng ra, <strong>tẩy password / API key / thông tin riêng thành <code>[REDACTED]</code></strong>, rồi dán <strong>Prompt A nguyên văn</strong> vào chính chat đó kèm đoạn đã tẩy và sổ gấp. Model gấp thành 1 block, <strong>tự đẩy file block lên repo dữ liệu private</strong> và trả link commit — mở link đó kiểm lại file trước khi coi là xong. Cần tạo block bằng tay thì dùng form ở cuối trang.</p></li>
-<li><h3>Mở chat mới bằng Prompt B</h3><p>Mở chat mới, dán <strong>Prompt B nguyên văn</strong> (kèm tin đầu tiên và 3 tin gần nhất). Model tự đọc các block đang current từ repo, nhắc lại bàn giao — kiểm xong mới làm tiếp. Chat cũ đổi tên <code>[ARCHIVE] &lt;dự án&gt; &lt;ngày&gt;</code>, giữ lại, không xóa. Đủ <strong>8 block</strong> thì dùng <strong>Prompt D</strong> gộp; cần lại chi tiết cũ thì theo <strong>Prompt C</strong>.</p></li>
+<li><h3>Chat như bình thường</h3><p>Chat tới khi <strong>một chặng việc đã khép lại</strong> (khoảng 2.500–4.000 từ cả hỏi lẫn đáp) và chat bắt đầu dài. Chưa khép lại thì chưa gấp.</p></li>
+<li><h3>Gấp bằng Prompt A ngay trong chat đó</h3><p>Tẩy <strong>password / API key / thông tin riêng thành <code>[REDACTED]</code></strong>, rồi dán <strong>Prompt A nguyên văn</strong> kèm đoạn đã tẩy và sổ gấp. Model gấp thành 1 block, <strong>tự đẩy file lên repo private</strong> và trả link commit — mở link kiểm lại mới coi là xong. Muốn tự tạo block thì dùng <a href="#tao-block">form cuối trang</a>: chỉ dán sổ + 2 tin đầu/cuối của chặng, form tự điền gần hết.</p></li>
+<li><h3>Mở chat mới bằng Prompt B</h3><p>Dán <strong>Prompt B nguyên văn</strong> kèm tin đầu tiên và 3 tin gần nhất. Model tự đọc các block đang current từ repo và nhắc lại bàn giao — kiểm xong mới làm tiếp. Chat cũ đổi tên <code>[ARCHIVE] &lt;dự án&gt; &lt;ngày&gt;</code>, giữ lại, không xóa. Đủ <strong>8 block</strong> thì dùng <strong>Prompt D</strong> gộp; cần lại chi tiết cũ thì theo <strong>Prompt C</strong>.</p></li>
 </ol>
 </section>
 
@@ -318,32 +357,35 @@ MẪU 18 TRƯỜNG — điền đúng mẫu này:
 </section>
 
 <section id="tao-block">
-<h2>Tạo block bằng form</h2>
-<p class="sub">Điền các ô dưới đây — form xuất ra đúng block 18 trường (Phần 1) kèm Phần 2. Mã block, ngày, version và status <strong>form tự điền</strong> từ sổ cấp ID; session_id và số bản gói mới bạn tự ghi (xem trong Sổ Gấp); đủ điều kiện (không trùng, đủ điểm cắt, đủ nội dung) nút Copy mới bật.</p>
+<h2>Tạo block — dán sổ + 2 tin, còn lại form tự điền</h2>
+<p class="sub">Dán <strong>sổ gấp</strong> và <strong>2 tin đầu / cuối của chặng</strong>. Mã block, NN, ngày, version, status form tự điền; session_id tự lấy từ dòng cuối sổ hoặc giá trị đã nhớ theo dự án. <strong>5 ô nội dung là phần bạn điền thật</strong> — ô nào không có thì tự gõ “(chưa có)”; để trống là nút Copy bị khóa và báo tên trường. <strong>parent_block_ids</strong> (Tier-2/3) bạn tự điền: 8 block current <strong>cũ nhất</strong>. Bấm Copy <strong>không sửa sổ</strong> — NN lần gấp sau vẫn tính từ sổ bạn dán. Đủ điều kiện (không trùng, đủ điểm cắt, đủ nội dung) nút Copy mới bật.</p>
 <div class="composer">
 <input type="hidden" id="f-date" /><input type="hidden" id="f-version" value="1" /><input type="hidden" id="f-status" value="current" /><input type="hidden" id="f-archlink" />
-<div class="auto" id="auto-line">Mã block: <span id="f-code">—</span> — ngày, version và status form tự điền từ sổ cấp ID và ngày hôm nay.</div>
+<div class="auto" id="auto-line">Mã block: <span id="f-code">—</span><br /><span id="auto-detail">Tự điền: NN · ngày · version · status; session_id từ sổ / đã nhớ; điểm cắt từ 2 tin dán.</span></div>
 <div class="grid">
-<div><label for="f-project">Mã dự án <span class="hint">— viết hoa, không dấu, ví dụ MONEO</span></label><input type="text" id="f-project" value="MONEO" /></div>
-<div><label for="f-nn">Số thứ tự NN <span class="hint">— form tự lấy NN tiếp theo từ sổ cấp ID; sửa tay được nếu cần</span></label><input type="text" id="f-nn" placeholder="Tự điền từ sổ cấp ID" /></div>
-<div><label for="f-session">session_id <span class="hint">— mã phiên chat, tự ghi; ví dụ trong Sổ Gấp</span></label><input type="text" id="f-session" placeholder="S-..." /></div>
+<div><label for="f-project">Mã dự án <span class="hint">— viết hoa, không dấu, ví dụ MONEO</span></label><input type="text" id="f-project" value="MONEO" autocomplete="off" autocapitalize="characters" /></div>
 <div><label for="f-tier">Tầng</label><select id="f-tier"><option value="1">Tier-1</option><option value="2">Tier-2</option><option value="3">Tier-3</option></select></div>
-<div><label for="f-packet">Số bản gói MỚI <span class="hint">— số bản mới = bản hiện tại + 1, xem trong Sổ Gấp</span></label><input type="text" id="f-packet" inputmode="numeric" value="1" /></div>
-<div id="f-parents-row" style="display:none"><label for="f-parents">parent_block_ids <span class="hint">— chỉ Tier-2/3: liệt kê đủ 8 mã block cha, cách nhau bằng dấu phẩy</span></label><input type="text" id="f-parents" placeholder="CTX-…, CTX-…" /></div>
-<div class="full"><label for="f-existing">Sổ cấp ID — các block đã cấp trong fold log <span class="hint">— dán mỗi dòng một block đã cấp (project_id | session_id | block_id | version | source_range) để form tự cấp NN tiếp theo, tự tăng số bản packet và kiểm tra trùng</span></label><textarea id="f-existing" placeholder="MONEO | S-20261110-A | CTX-MONEO-20261110-01 | 1 | điểm mở đầu… → điểm kết thúc…"></textarea></div>
-<div class="full"><label for="f-firstfold"><input type="checkbox" id="f-firstfold" /> Lần gấp đầu (FIRST_FOLD) <span class="hint">— chỉ tick khi đây là lần gấp đầu tiên của dự án (chưa có block nào, NN phải là 01); tick sai so với sổ cấp ID thì Copy bị khóa</span></label></div>
-<div class="full"><label for="f-cut">source_range — điểm biên đoạn gấp <span class="hint">— trích nguyên văn 15 đơn vị đầu tiên của tin mở đầu đoạn gấp → 15 đơn vị đầu tiên của tin kết thúc đoạn gấp</span></label><textarea id="f-cut" placeholder="15 đơn vị đầu của tin mở đầu… → 15 đơn vị đầu của tin kết thúc…"></textarea></div>
-<div class="full"><label><input type="checkbox" id="f-cut-short-a" /> Phía trái source_range là toàn văn tin nhắn ngắn (&lt;15 đơn vị)</label><br /><label><input type="checkbox" id="f-cut-short-b" /> Phía phải source_range là toàn văn tin nhắn ngắn (&lt;15 đơn vị)</label></div>
-<div class="full"><label for="f-decided">Quyết định đã chốt <span class="hint">— nguyên văn, kèm lý do, mỗi ý một dòng; không có thì ghi đúng “(chưa có)”</span></label><textarea id="f-decided" placeholder="Mỗi dòng một quyết định kèm lý do"></textarea></div>
-<div class="full"><label for="f-constraints">Ràng buộc / quy tắc <span class="hint">— không có thì ghi đúng “(chưa có)”</span></label><textarea id="f-constraints" placeholder="Mỗi dòng một ràng buộc"></textarea></div>
-<div><label for="f-pending">Việc đang dở <span class="hint">— không có thì ghi đúng “(chưa có)”</span></label><textarea id="f-pending" placeholder="Việc chưa xong"></textarea></div>
-<div><label for="f-facts">Dữ kiện nguyên văn <span class="hint">— số / tên / link quan trọng, ghi nguyên văn; không có thì ghi đúng “(chưa có)”</span></label><textarea id="f-facts" placeholder="Mỗi dòng một dữ kiện"></textarea></div>
-<div class="full"><label for="f-dropped">Đã bỏ đi cố ý <span class="hint">— không bỏ gì thì ghi đúng “(chưa có)”</span></label><textarea id="f-dropped" placeholder="Phần bạn chủ động bỏ khi gấp"></textarea></div>
-<div class="full"><label for="f-raw">PHẦN 2 — SANITIZED_RAW_SOURCE (chỉ Tier-1; Tier-2/3 dùng danh sách block cha) <span class="hint">— toàn văn đoạn đã gấp, nằm trong cùng file với block trong repo; xóa password / API key / thông tin riêng trước khi dán. Dài thì form tự đếm số phần (mỗi phần tối đa 500 từ và 50 dòng)</span></label><textarea id="f-raw" placeholder="Chép nguyên văn đoạn chat đã gấp vào đây để model đẩy kèm vào file block trong repo"></textarea></div>
+<div><label for="f-session">session_id <span class="hint">— tự lấy từ dòng cuối sổ khi dán sổ, hoặc giá trị đã nhớ theo dự án; sửa được</span></label><input type="text" id="f-session" autocomplete="off" /></div>
+<div><label for="f-nn">NN <span class="hint">— tự cấp tiếp theo từ sổ</span></label><input type="text" id="f-nn" inputmode="numeric" autocomplete="off" /></div>
+<div><label for="f-packet">Số bản gói mới <span class="hint">— trang tự nhớ theo dự án; sửa được</span></label><input type="text" id="f-packet" inputmode="numeric" value="1" /></div>
+<div id="f-parents-row" style="display:none"><label for="f-parents">parent_block_ids <span class="hint">— chỉ Tier-2/3: tự điền 8 block current CŨ NHẤT của dự án (luật gộp), cách nhau bằng dấu phẩy</span></label><input type="text" id="f-parents" placeholder="CTX-…, CTX-…" /></div>
+<div class="full"><label for="f-existing">1 · Dán sổ gấp <span class="hint">— mỗi dòng một block đã cấp (project_id | session_id | block_id | version | source_range). Form đọc sổ để tự cấp NN, lấy session_id từ dòng cuối và kiểm tra trùng. Bấm Copy block không sửa sổ này.</span></label><textarea id="f-existing" placeholder="MONEO | S-20261110-A | CTX-MONEO-20261110-01 | 1 | điểm mở đầu… → điểm kết thúc…"></textarea></div>
+<div class="full" id="f-firstfold-row"><label for="f-firstfold"><input type="checkbox" id="f-firstfold" /> Đúng — đây là lần gấp đầu của dự án này (chưa có block nào) <span class="hint">— chỉ tick khi dự án CHƯA có block nào: NN 01, không cần điểm cắt. Form không tự tick; sổ trống thì trang không xác minh được đây đúng là lần gấp đầu — tick là bạn tự xác nhận. Nếu dự án đã có block, dán đúng sổ của dự án thay vì tick ô này.</span></label></div>
+<details class="full" id="f-raw-row"><summary>2 · Dán đoạn chat đã tẩy (Phần 2) — đính vào file Tier-1, không bắt buộc cho cổng</summary><div style="margin-top:10px"><label for="f-raw">Đoạn chat đã tẩy <span class="hint">— xóa password / API key / thông tin riêng trước khi dán. Form tự đếm số phần của Phần 2.</span></label><textarea id="f-raw" placeholder="Dán toàn bộ đoạn chat của chặng đã gấp vào đây"></textarea></div></details>
+<div class="full"><label for="f-openmsg">3 · Dán tin mở đầu <span class="hint">— dán NGUYÊN VĂN cả tin nhắn mở đầu của chặng, không cần đếm từ; form tự lấy 15 đơn vị đầu vào source_range</span></label><textarea id="f-openmsg" placeholder="Dán nguyên văn tin mở đầu của chặng"></textarea></div>
+<div class="full"><label for="f-closemsg">4 · Dán tin kết thúc <span class="hint">— dán NGUYÊN VĂN cả tin nhắn kết thúc của chặng; form tự lấy 15 đơn vị đầu vào source_range</span></label><textarea id="f-closemsg" placeholder="Dán nguyên văn tin kết thúc của chặng"></textarea></div>
+<div class="full"><label for="f-cut">source_range <span class="hint">— tự điền từ 2 ô dán tin ở trên; sửa tay được</span></label><textarea id="f-cut" placeholder="Tự điền khi bạn dán 2 tin mở đầu / kết thúc"></textarea></div>
+<div class="full"><label style="font-weight:400;font-size:.86rem"><input type="checkbox" id="f-cut-short-a" /> Phía trái là toàn văn một tin nhắn ngắn (&lt;15 đơn vị) — chỉ tick khi đúng là toàn văn tin mở đầu</label><label style="font-weight:400;font-size:.86rem"><input type="checkbox" id="f-cut-short-b" /> Phía phải là toàn văn một tin nhắn ngắn (&lt;15 đơn vị) — chỉ tick khi đúng là toàn văn tin kết thúc</label></div>
+<div class="full"><label for="f-decided">Quyết định đã chốt <span class="hint">— nguyên văn kèm lý do, mỗi ý một dòng; bắt buộc — không có thì tự gõ (chưa có), để trống là khóa Copy</span></label><textarea id="f-decided" placeholder="Mỗi dòng một quyết định kèm lý do"></textarea></div>
+<div class="full"><label for="f-constraints">Ràng buộc / quy tắc <span class="hint">— bắt buộc — không có thì tự gõ (chưa có), để trống là khóa Copy</span></label><textarea id="f-constraints" placeholder="Mỗi dòng một ràng buộc"></textarea></div>
+<div><label for="f-pending">Việc đang dở <span class="hint">— bắt buộc — không có thì tự gõ (chưa có), để trống là khóa Copy</span></label><textarea id="f-pending" placeholder="Việc chưa xong"></textarea></div>
+<div><label for="f-facts">Dữ kiện nguyên văn <span class="hint">— số / tên / link quan trọng; bắt buộc — không có thì tự gõ (chưa có), để trống là khóa Copy</span></label><textarea id="f-facts" placeholder="Mỗi dòng một dữ kiện"></textarea></div>
+<div class="full"><label for="f-dropped">Đã bỏ đi cố ý <span class="hint">— bắt buộc — không bỏ gì thì tự gõ (chưa có), để trống là khóa Copy</span></label><textarea id="f-dropped" placeholder="Phần bạn chủ động bỏ khi gấp"></textarea></div>
 <details class="full"><summary>Thêm (không bắt buộc)</summary><div style="margin-top:10px"><label for="f-srcurl">source_chat_url <span class="hint">— link chat cũ, có thì dán, không có thì để trống</span></label><input type="text" id="f-srcurl" placeholder="https://chatgpt.com/…" /></div></details>
 </div>
 <div class="out" id="block-out" aria-live="polite"></div>
-<div class="row"><button class="copy-btn" id="copy-block" type="button">Copy block</button><span class="note" id="gate-note">Block tạo ngay trên trang này. Dán block đã copy vào chat kèm Prompt A để model đẩy file lên repo dữ liệu — sau khi bạn đã kiểm tra và đã xóa password / API key / thông tin riêng.</span></div>
+<p class="note" id="gate-note"></p>
+<div class="actionbar" id="copy-bar"><button class="copy-btn big" id="copy-block" type="button">Copy block</button><span class="bar-status" id="bar-status"></span></div>
 </div>
 </section>
 
@@ -367,9 +409,27 @@ else if(v==="tm"){base[2]="[CTX-MONEO-20261110-T3-<NN>]";base[3]="[3]";base[6]="
 else{base[2]="[CTX-MONEO-20261110-<NN>]";base[3]="[1]";base[6]="[15 đơn vị đầu của TIN MỞ ĐẦU → 15 đơn vị đầu của TIN KẾT THÚC]";base[7]="[(chưa có)]";base[11]="[1]";base[13]="[nguyên văn quyết định + lý do, hoặc (chưa có)]";base[15]="[nguyên văn, hoặc (chưa có)]";base[16]="[nguyên văn, hoặc (chưa có)]";base[17]="[ghi rõ thứ đã bỏ, hoặc (chưa có)]"}
 return base}
 var slots=document.querySelectorAll(".tpl-slot");for(var s=0;s<slots.length;s++){slots[s].textContent=blockText(tplVals(slots[s].getAttribute("data-tpl")||"t1"))}
-/* ===== FORM — V15: tự điền NN / session_id / packet version / ngày / version / status ===== */
-var f={project:document.getElementById("f-project"),nn:document.getElementById("f-nn"),date:document.getElementById("f-date"),code:document.getElementById("f-code"),session:document.getElementById("f-session"),tier:document.getElementById("f-tier"),version:document.getElementById("f-version"),status:document.getElementById("f-status"),packet:document.getElementById("f-packet"),srcurl:document.getElementById("f-srcurl"),archlink:document.getElementById("f-archlink"),cut:document.getElementById("f-cut"),cutShortA:document.getElementById("f-cut-short-a"),cutShortB:document.getElementById("f-cut-short-b"),firstfold:document.getElementById("f-firstfold"),existing:document.getElementById("f-existing"),decided:document.getElementById("f-decided"),constraints:document.getElementById("f-constraints"),pending:document.getElementById("f-pending"),facts:document.getElementById("f-facts"),dropped:document.getElementById("f-dropped"),parentsRow:document.getElementById("f-parents-row"),parents:document.getElementById("f-parents"),raw:document.getElementById("f-raw")};
-var out=document.getElementById("block-out");var copyBlockBtn=document.getElementById("copy-block");var gateNote=document.getElementById("gate-note");
+/* ===== FORM/* ===== PROMPT CARDS — nút Hiện/Ẩn nội dung; mặc định thu gọn trên màn hình nhỏ ===== */
+var allCards=document.querySelectorAll(".prompt-card");
+for(var pc=0;pc<allCards.length;pc++){(function(card){
+var body=card.querySelector(".prompt-body")||card.querySelector(".mini");if(!body)return;
+var head=card.querySelector(".head");if(!head)return;
+var tg=document.createElement("button");tg.type="button";tg.className="toggle-btn";tg.textContent="Ẩn prompt";
+tg.addEventListener("click",function(){var closed=card.classList.toggle("closed");tg.textContent=closed?"Hiện prompt":"Ẩn prompt"});
+head.appendChild(tg);
+if(window.innerWidth<720){card.classList.add("closed");tg.textContent="Hiện prompt"}
+})(allCards[pc])}
+/* ===== FORM — V16 đúng thiết kế: giảm nhập liệu nhưng cổng kiểm tra giữ nguyên luật cũ.
+   Tự điền: NN (từ sổ) · ngày · version · status. session_id CHỈ lấy từ dòng cuối
+   của sổ khi dán sổ (autoFillFromLedger) hoặc giá trị đã nhớ theo dự án
+   (localStorage) / đã gõ — KHÔNG tự sinh từ ngày hôm nay. source_range derive
+   từ 2 ô dán nguyên văn tin mở đầu / kết thúc (deriveCutFromMessages), vẫn sửa
+   tay được. parent_block_ids người dùng tự điền (luật gộp: 8 block current
+   CŨ NHẤT). Không ô nào bị form tự tick. Ô nội dung để trống sau khi trim =
+   khóa Copy + lỗi nêu tên trường (luật V11) — chỉ "(chưa có)" do người dùng
+   tự gõ mới tính là không có. Bấm Copy KHÔNG sửa sổ, KHÔNG tăng NN. ===== */
+var f={project:document.getElementById("f-project"),nn:document.getElementById("f-nn"),date:document.getElementById("f-date"),code:document.getElementById("f-code"),session:document.getElementById("f-session"),tier:document.getElementById("f-tier"),version:document.getElementById("f-version"),status:document.getElementById("f-status"),packet:document.getElementById("f-packet"),srcurl:document.getElementById("f-srcurl"),archlink:document.getElementById("f-archlink"),cut:document.getElementById("f-cut"),cutShortA:document.getElementById("f-cut-short-a"),cutShortB:document.getElementById("f-cut-short-b"),firstfold:document.getElementById("f-firstfold"),firstfoldRow:document.getElementById("f-firstfold-row"),existing:document.getElementById("f-existing"),decided:document.getElementById("f-decided"),constraints:document.getElementById("f-constraints"),pending:document.getElementById("f-pending"),facts:document.getElementById("f-facts"),dropped:document.getElementById("f-dropped"),parentsRow:document.getElementById("f-parents-row"),parents:document.getElementById("f-parents"),raw:document.getElementById("f-raw"),rawRow:document.getElementById("f-raw-row"),openmsg:document.getElementById("f-openmsg"),closemsg:document.getElementById("f-closemsg")};
+var out=document.getElementById("block-out");var copyBlockBtn=document.getElementById("copy-block");var gateNote=document.getElementById("gate-note");var barStatus=document.getElementById("bar-status");var autoDetail=document.getElementById("auto-detail");
 function pad(n){return(n<10?"0":"")+n}
 function todayYmd(){var d=new Date();return d.getFullYear()+""+pad(d.getMonth()+1)+""+pad(d.getDate())}
 function proj(){return (f.project.value.trim()||"PROJECT").toUpperCase().replace(/[^A-Z0-9]/g,"")}
@@ -380,46 +440,70 @@ function srcVal(){return f.srcurl.value.trim()||"(chưa có)"}
 function archVal(){return f.archlink.value.trim()||"(chính là Phần 2 của file này)"}
 function nnVal(){var v=f.nn.value.trim().replace(/\D/g,"");if(!v)return "";if(v.length<2)v="0"+v;return v}
 function codeVal(){if(!nnVal())return "";var base="CTX-"+proj()+"-"+dateVal()+"-";return f.tier.value==="2"?base+"T2-"+nnVal():f.tier.value==="3"?base+"T3-"+nnVal():base+nnVal()}
-function oneLine(t){var lines=t.split("\n").map(function(x){return x.trim()}).filter(function(x){return x.length>0});return lines.length?lines.join(" ; "):"(chưa có)"}
-function cutVal(){return f.firstfold.checked?"không áp dụng — lần gấp đầu":f.cut.value.trim()}
+function oneLine(t){return t.split("\n").map(function(x){return x.trim()}).filter(function(x){return x.length>0}).join(" ; ")}
 function ledgerLines(){return f.existing.value.split("\n").map(function(x){return x.trim()}).filter(function(x){return x.length>0})}
-function packetVal(){return f.packet.value.trim()}
-function serializeBlock(){var now=new Date();var dv=dateVal();var created=dv.slice(0,4)+"-"+dv.slice(4,6)+"-"+dv.slice(6,8)+" "+pad(now.getHours())+":"+pad(now.getMinutes())+" +07";var sr=cutVal();var vals=[proj(),f.session.value.trim(),codeVal(),f.tier.value,versionVal(),srcVal(),sr,(f.parents.value.trim()||"(chưa có)"),statusVal(),created,created,packetVal(),archVal(),oneLine(f.decided.value),oneLine(f.constraints.value),oneLine(f.pending.value),oneLine(f.facts.value),oneLine(f.dropped.value)];return blockText(vals)}
+function parseCodes(line){return line.match(/CTX-[A-Z0-9]+-\d{8}-(?:T[23]-)?\d+/g)||[]}
+function projectCodes(){var p="CTX-"+proj()+"-";var res=[];var lines=ledgerLines();for(var i=0;i<lines.length;i++){var cs=parseCodes(lines[i]);for(var j=0;j<cs.length;j++){if(cs[j].indexOf(p)===0)res.push(cs[j])}}return res}
+function codeTier(c){var m=c.match(/-(T[23])-\d+$/);return m?m[1].charAt(1):"1"}
+function projectHasBlocks(){return projectCodes().length>0}
+function isFirstFold(){return f.tier.value==="1"&&f.firstfold.checked}
+function nextNN(){var t=f.tier.value;var max=0;var codes=projectCodes();for(var i=0;i<codes.length;i++){if(codeTier(codes[i])!==t)continue;var n=parseInt(codes[i].match(/(\d+)$/)[1],10);if(n>max)max=n}return pad(max+1)}
+function packetVal(){return f.packet.value.trim()||"1"}
+function units(s){return s.trim().split(/\s+/).filter(function(x){return x.length>0})}
+function countUnits(s){return units(s).length}
+function deriveCutFromMessages(){var a=f.openmsg.value.trim(),b=f.closemsg.value.trim();if(!a&&!b)return;f.cut.value=units(a).slice(0,15).join(" ")+" → "+units(b).slice(0,15).join(" ");render()}
+function cutVal(){return isFirstFold()?"không áp dụng — lần gấp đầu":f.cut.value.trim()}
 function tupleExists(){var code=codeVal();if(!code)return false;var sess=f.session.value.trim();var lines=ledgerLines();for(var i=0;i<lines.length;i++){var parts=lines[i].split("|").map(function(x){return x.trim()});if(parts.length>=4){if(parts[0]===proj()&&parts[1]===sess&&parts[2]===code&&parts[3]===versionVal())return true}else if(lines[i].indexOf(code)!==-1){return true}}return false}
-function nextFreeNN(){var prefix="CTX-"+proj()+"-"+dateVal()+"-"+(f.tier.value==="2"?"T2-":f.tier.value==="3"?"T3-":"");var used={};var lines=ledgerLines();for(var i=0;i<lines.length;i++){var m=lines[i].match(/CTX-[A-Z0-9]+-\d{8}-(?:T[23]-)?(\d+)/g);if(m){for(var j=0;j<m.length;j++){if(m[j].indexOf(prefix)===0){used[parseInt(m[j].slice(prefix.length),10)]=true}}}}var n=1;while(used[n])n++;return (n<10?"0":"")+n}
 function duplicateCutCode(){var v=f.cut.value.trim();if(!v)return "";var lines=ledgerLines();for(var i=0;i<lines.length;i++){var parts=lines[i].split("|").map(function(x){return x.trim()});if(parts.length>=5&&parts[4]===v)return parts[2]}return ""}
-function projectHasBlocks(){var needle="CTX-"+proj()+"-";var lines=ledgerLines();for(var i=0;i<lines.length;i++){if(lines[i].indexOf(needle)!==-1)return true}return false}
-function countUnits(s){return s.trim().split(/\s+/).filter(function(x){return x.length>0}).length}
-function ledgerEmpty(){return ledgerLines().length===0}
 function chunkCount(raw){var w=raw.split(/\s+/).filter(function(x){return x.length>0}).length;var l=raw.split("\n").length;return Math.max(1,Math.max(Math.ceil(w/500),Math.ceil(l/50)))}
-function gateError(){if(!nnVal())return "NN chưa được cấp. Dán sổ cấp ID để form tự cấp NN tiếp theo, hoặc điền NN bằng tay. Form chưa xuất block.";
-var CONTENT_FIELDS=[[f.decided,"Quyết định đã chốt"],[f.constraints,"Ràng buộc / quy tắc"],[f.pending,"Việc đang dở"],[f.facts,"Dữ kiện nguyên văn"],[f.dropped,"Đã bỏ đi cố ý"]];
-for(var ci=0;ci<CONTENT_FIELDS.length;ci++){if(!CONTENT_FIELDS[ci][0].value.trim())return "trường "+CONTENT_FIELDS[ci][1]+" đang trống. Ghi nội dung vào, hoặc ghi đúng '(chưa có)' nếu chặng này thật sự không có "+CONTENT_FIELDS[ci][1]+"."}
-if(f.firstfold.checked){if(nnVal()!=="01"||f.tier.value!=="1")return "FIRST_FOLD chỉ hợp lệ với NN==01 và tier 1 — bạn đang dùng NN "+nnVal()+" / Tier-"+f.tier.value+". Nút Copy bị vô hiệu. Sửa NN về 01 và tier về 1, hoặc bỏ tick FIRST_FOLD và điền source_range hợp lệ.";if(projectHasBlocks())return "FIRST_FOLD tick sai: sổ cấp ID (fold-log ledger) đã có block của dự án này — FIRST_FOLD chỉ hợp lệ khi ledger xác nhận chưa có block nào, và chỉ với NN==01. Nút Copy bị vô hiệu. Bỏ tick FIRST_FOLD và điền source_range hợp lệ.";return ""}
-if(tupleExists())return "Trùng ID trong sổ cấp ID (fold-log ledger): tổ hợp project_id + session_id + block_id + version đã tồn tại. Nút Copy bị vô hiệu. NN trống tiếp theo cho dự án / ngày / tầng này: "+nextFreeNN()+" — cấp NN mới từ fold log rồi điền lại.";
-var dupCut=duplicateCutCode();if(dupCut)return "source_range trùng với block "+dupCut+" — chặng này đã gấp rồi, không tạo block mới";
+function serializeBlock(){var now=new Date();var dv=dateVal();var created=dv.slice(0,4)+"-"+dv.slice(4,6)+"-"+dv.slice(6,8)+" "+pad(now.getHours())+":"+pad(now.getMinutes())+" +07";var vals=[proj(),f.session.value.trim(),codeVal(),f.tier.value,versionVal(),srcVal(),cutVal(),(f.parents.value.trim()||"(chưa có)"),statusVal(),created,created,packetVal(),archVal(),oneLine(f.decided.value),oneLine(f.constraints.value),oneLine(f.pending.value),oneLine(f.facts.value),oneLine(f.dropped.value)];return blockText(vals)}
+/* ===== Nhớ metadata theo dự án (localStorage, chỉ máy người dùng) — DIFF V16 §2a.
+   Chỉ nhớ mã dự án / session_id / số bản gói; KHÔNG nhớ nội dung chat. ===== */
+var REMEMBER_KEY="kit-remember-v1";
+function readStore(){try{if(typeof localStorage==="undefined")return null;var raw=localStorage.getItem(REMEMBER_KEY);return raw?JSON.parse(raw):null}catch(e){return null}}
+function rememberForm(){try{if(typeof localStorage==="undefined")return;var p=proj();if(!p)return;var store=readStore()||{lastProject:"",projects:{}};if(!store.projects)store.projects={};store.lastProject=p;store.projects[p]={session:f.session.value.trim(),packet:f.packet.value.trim()};localStorage.setItem(REMEMBER_KEY,JSON.stringify(store))}catch(e){}}
+function restoreRemembered(){var store=readStore();if(!store||!store.projects)return;var p=f.project.value.trim().toUpperCase().replace(/[^A-Z0-9]/g,"");if(!p&&store.lastProject){p=store.lastProject;f.project.value=p}var entry=p?store.projects[p]:null;if(entry){f.session.value=entry.session||"";f.packet.value=entry.packet||"1"}else{f.session.value="";f.packet.value="1"}}
+function fillDefaults(){if(!f.date.value.trim())f.date.value=todayYmd();if(!f.version.value.trim())f.version.value="1";if(!f.status.value.trim())f.status.value="current";if(!f.nn.value.trim())f.nn.value=isFirstFold()?"01":nextNN()}
+/* Tự điền khi sổ thay đổi: NN tiếp theo từ sổ + session_id = cột session của
+   dòng sổ CUỐI CÙNG. Sổ trống thì giữ nguyên session đã nhớ / đã gõ. */
+function autoFillFromLedger(){fillDefaults();var lines=ledgerLines();if(lines.length){var parts=lines[lines.length-1].split("|").map(function(x){return x.trim()});if(parts.length>=2&&parts[1])f.session.value=parts[1];f.nn.value=isFirstFold()?"01":nextNN()}render()}
+function gateError(){
+if(f.firstfold.checked){
+if(f.tier.value!=="1")return "FIRST_FOLD chỉ hợp lệ với tier 1 — bỏ tick ô lần gấp đầu, hoặc chuyển tầng về Tier-1 rồi mới tick.";
+if(nnVal()!=="01")return "FIRST_FOLD chỉ hợp lệ khi NN==01 — lần gấp đầu của dự án luôn là block 01.";
+if(projectHasBlocks())return "FIRST_FOLD tick sai: sổ gấp đã có block của dự án này, nên đây không phải lần gấp đầu — bỏ tick ô lần gấp đầu và dùng NN tiếp theo."}
+if(!nnVal())return "Chưa có NN — dán sổ gấp để form tự cấp NN tiếp theo, hoặc điền NN tay vào ô NN.";
+if(!isFirstFold()){
+if(tupleExists())return "Trùng ID trong sổ cấp ID (fold-log ledger): tổ hợp project_id + session_id + block_id + version đã tồn tại. Nút Copy bị vô hiệu. NN trống tiếp theo cho dự án / tầng này: "+nextNN()+".";
+var dupCut=duplicateCutCode();if(dupCut)return "source_range trùng với block "+dupCut+" — chặng này đã gấp rồi, không tạo block mới.";
 var v=f.cut.value.trim();
-if(!v)return "Thiếu source_range: chưa có điểm cắt hợp lệ nên form KHÔNG render block và nút Copy bị vô hiệu. Chỉ lần gấp đầu (FIRST_FOLD) mới được ghi \u201ckhông áp dụng — lần gấp đầu\u201d.";
-if(v.indexOf("(chưa có)")!==-1)return "\u201c(chưa có)\u201d ở ô source_range KHÔNG phải điểm cắt hợp lệ. Form KHÔNG render block và nút Copy bị vô hiệu.";
-var parts=v.split("→");if(parts.length!==2)return "source_range sai định dạng: phải có đúng một dấu → nối hai phía — \u201c15 đơn vị đầu của TIN MỞ ĐẦU → 15 đơn vị đầu của TIN KẾT THÚC\u201d. Form KHÔNG render block và nút Copy bị vô hiệu.";
+if(!v)return f.tier.value==="1"?"Chưa có source_range — dán nguyên văn tin mở đầu và tin kết thúc vào 2 ô phía trên để form tự điền điểm cắt, hoặc tự gõ source_range.":"Chưa có source_range — với Tier-2/3 hãy tự điền điểm biên (15 đơn vị đầu của tin mở đầu block cha cũ nhất → 15 đơn vị đầu của tin kết thúc block cha mới nhất).";
+if(v.indexOf("(chưa có)")!==-1)return "“(chưa có)” ở ô source_range KHÔNG phải điểm cắt hợp lệ. Form KHÔNG render block và nút Copy bị vô hiệu.";
+var parts=v.split("→");if(parts.length!==2)return "source_range sai định dạng: phải có đúng một dấu → nối hai phía — “15 đơn vị đầu của TIN MỞ ĐẦU → 15 đơn vị đầu của TIN KẾT THÚC”. Form KHÔNG render block và nút Copy bị vô hiệu.";
 var uA=countUnits(parts[0]),uB=countUnits(parts[1]);
-if(uA<15&&!f.cutShortA.checked)return "Phía trái của source_range chỉ có "+uA+" đơn vị (<15) mà chưa tick ô xác nhận \u201cphía này là toàn văn tin nhắn ngắn\u201d. Tick ô xác nhận nếu phía trái đúng là toàn bộ một tin nhắn ngắn hơn 15 đơn vị, hoặc trích đủ 15 đơn vị. Form KHÔNG render block và nút Copy bị vô hiệu.";
-if(uB<15&&!f.cutShortB.checked)return "Phía phải của source_range chỉ có "+uB+" đơn vị (<15) mà chưa tick ô xác nhận \u201cphía này là toàn văn tin nhắn ngắn\u201d. Tick ô xác nhận nếu phía phải đúng là toàn bộ một tin nhắn ngắn hơn 15 đơn vị, hoặc trích đủ 15 đơn vị. Form KHÔNG render block và nút Copy bị vô hiệu.";
+if(uA<15&&!f.cutShortA.checked)return "Phía trái của source_range chỉ có "+uA+" đơn vị (<15). Trích đủ 15 đơn vị đầu của tin mở đầu; nếu phía đó đúng là toàn văn một tin nhắn ngắn hơn 15 đơn vị thì tự tick ô xác nhận phía trái — form không tự tick. Form KHÔNG render block và nút Copy bị vô hiệu.";
+if(uB<15&&!f.cutShortB.checked)return "Phía phải của source_range chỉ có "+uB+" đơn vị (<15). Trích đủ 15 đơn vị đầu của tin kết thúc; nếu phía đó đúng là toàn văn một tin nhắn ngắn hơn 15 đơn vị thì tự tick ô xác nhận phía phải — form không tự tick. Form KHÔNG render block và nút Copy bị vô hiệu."}
+var cf=[[f.decided,FIELD_NAMES[13]],[f.constraints,FIELD_NAMES[14]],[f.pending,FIELD_NAMES[15]],[f.facts,FIELD_NAMES[16]],[f.dropped,FIELD_NAMES[17]]];
+for(var ci=0;ci<cf.length;ci++){if(!cf[ci][0].value.trim())return "Trường nội dung đang để trống: "+cf[ci][1]+". Điền nội dung thật của chặng; nếu thật sự không có thì tự gõ “(chưa có)” vào đúng ô đó — để trống sau khi trim thì không xuất block (luật V11). Form KHÔNG render block và nút Copy bị vô hiệu."}
 return ""}
-function autoFillFromLedger(){var p="CTX-"+proj()+"-";var maxNN=0;var lines=ledgerLines();
-for(var i=0;i<lines.length;i++){var codes=lines[i].match(/CTX-[A-Z0-9]+-\d{8}-(?:T[23]-)?\d+/g)||[];for(var j=0;j<codes.length;j++){var c=codes[j];if(c.indexOf(p)!==0)continue;var rest=c.slice(p.length+9);if(f.tier.value==="1"&&rest.indexOf("T")===0)continue;if(f.tier.value==="2"&&rest.indexOf("T2-")!==0)continue;if(f.tier.value==="3"&&rest.indexOf("T3-")!==0)continue;var n=parseInt(rest.replace(/^T[23]-/,""),10);if(n>maxNN)maxNN=n}}
-f.nn.value=pad(maxNN+1);f.date.value=todayYmd();f.version.value="1";f.status.value="current";f.code.textContent=codeVal()||"—";render()}
 function render(){
+fillDefaults();
+var ff=isFirstFold();
 f.parentsRow.style.display=f.tier.value==="1"?"none":"";
-f.cut.disabled=!!f.firstfold.checked;
+f.rawRow.style.display=f.tier.value==="1"?"":"none";
+f.firstfoldRow.style.display=f.tier.value==="1"?"":"none";
+f.cut.disabled=ff;
 f.code.textContent=codeVal()||"—";
+if(autoDetail)autoDetail.textContent="NN "+(nnVal()||"—")+" · session "+(f.session.value.trim()||"—")+" · số bản gói "+packetVal()+" · "+(ff?"lần gấp đầu — không cần điểm cắt":(f.tier.value==="1"?"điểm cắt: tự điền từ 2 ô dán tin mở đầu / kết thúc, sửa tay được":"Tier-"+f.tier.value+" — điểm cắt và parent_block_ids do bạn điền"));
 var err=gateError();
-if(err){out.textContent="⛔ CHƯA XUẤT BLOCK — "+err;copyBlockBtn.disabled=true;if(gateNote)gateNote.textContent="Hàng rào đang chặn xuất block: sửa đúng lỗi nêu trong khung kết quả, block mới hiện và nút Copy mới bật.";return}
+if(err){out.textContent="⛔ CHƯA XUẤT BLOCK — "+err;copyBlockBtn.disabled=true;if(gateNote)gateNote.textContent="Hàng rào đang chặn xuất block: sửa đúng lỗi nêu trong khung kết quả, block mới hiện và nút Copy mới bật.";if(barStatus)barStatus.textContent="⛔ Chưa copy được — xem lý do trong khung kết quả ở trên.";return}
 copyBlockBtn.disabled=false;
+if(barStatus)barStatus.textContent="✓ Block sẵn sàng.";
 var noteTxt="Block tạo ngay trên trang này bằng shared serializer — Phần 1 đúng 18 trường. ";
 noteTxt+=f.tier.value==="1"?"Dán block vào chat kèm Prompt A để model đẩy file lên repo dữ liệu (đủ 2 phần: tóm tắt + SANITIZED_RAW_SOURCE) sau khi đã kiểm tra và đã xóa password / API key / thông tin riêng.":"Dán block vào chat kèm Prompt A để model đẩy file lên repo dữ liệu (đủ 2 phần: tóm tắt + danh sách block cha + link) sau khi đã kiểm tra và đã xóa password / API key / thông tin riêng.";
-if(ledgerEmpty()&&!f.firstfold.checked)noteTxt+=" ⚠️ Cảnh báo: sổ cấp ID đang trống — chưa dán sổ, kiểm tra trùng chưa chạy (kiểm tra trùng chỉ chạy được khi đã dán sổ).";
-if(ledgerEmpty()&&f.firstfold.checked)noteTxt+=" ⚠️ chưa dán sổ — không xác minh được đây đúng là lần gấp đầu; chỉ tiếp tục nếu bạn chắc chắn chưa từng gấp cho dự án này.";
+if(f.firstfold.checked&&!projectHasBlocks())noteTxt+=" ⚠️ Sổ không có block nào của dự án này nên trang không xác minh được đây đúng là lần gấp đầu — chỉ tiếp tục nếu bạn chắc chắn dự án chưa từng gấp block nào.";
+else if(ledgerLines().length===0)noteTxt+=" ⚠️ Bạn chưa dán sổ, kiểm tra trùng chưa chạy — dán sổ gấp của dự án để cổng đối chiếu trùng ID và trùng source_range.";
+if(f.tier.value==="1"&&!f.raw.value.trim())noteTxt+=" ⚠️ Chưa dán đoạn chat (Phần 2) — block copy được nhưng file Tier-1 chưa đủ 2 phần thì lần gấp chưa xong.";
 if(gateNote)gateNote.textContent=noteTxt;
 var parts=[serializeBlock()];
 if(f.tier.value==="1"){
@@ -429,8 +513,23 @@ var par=(f.parents.value.trim()||"");
 if(par){parts.push("","PHẦN 2 — DANH SÁCH BLOCK CHA (parent_block_ids + link)","Phần 2: danh sách block cha + link tới file gốc có raw transcript — KHÔNG có raw riêng.",""+par)}else{parts.push("","PHẦN 2 — DANH SÁCH BLOCK CHA (parent_block_ids + link): (chưa điền parent_block_ids — file Tier-2/3 chưa đủ Phần 2 thì lần gấp chưa xong)")}
 }
 out.textContent=parts.join("\n")}
-Object.keys(f).forEach(function(k){if(f[k]){f[k].addEventListener("input",render);f[k].addEventListener("change",render)}});f.existing.addEventListener("input",autoFillFromLedger);f.existing.addEventListener("change",autoFillFromLedger);f.firstfold.addEventListener("change",autoFillFromLedger);render();
-document.getElementById("copy-block").addEventListener("click",function(){if(this.disabled)return;copyText(out.textContent,this)});
+function refreshAuto(){render()}
+[["nn"],["packet"],["parents"],["cut"],["srcurl"],["decided"],["constraints"],["pending"],["facts"],["dropped"]].forEach(function(pair){var el=f[pair[0]];el.addEventListener("input",render);el.addEventListener("change",render)});
+f.tier.addEventListener("input",render);f.tier.addEventListener("change",render);
+f.project.addEventListener("input",render);
+f.project.addEventListener("change",function(){restoreRemembered();render()});
+f.session.addEventListener("input",render);f.session.addEventListener("change",rememberForm);
+f.packet.addEventListener("change",rememberForm);
+f.existing.addEventListener("input",autoFillFromLedger);
+f.existing.addEventListener("change",autoFillFromLedger);
+f.raw.addEventListener("input",render);
+f.openmsg.addEventListener("input",deriveCutFromMessages);
+f.closemsg.addEventListener("input",deriveCutFromMessages);
+f.firstfold.addEventListener("change",render);
+f.cutShortA.addEventListener("change",render);f.cutShortB.addEventListener("change",render);
+copyBlockBtn.addEventListener("click",function(){if(this.disabled)return;copyText(out.textContent,this)});
+restoreRemembered();
+refreshAuto();
 if(window.lucide)lucide.createIcons();
 })();
 </script>
