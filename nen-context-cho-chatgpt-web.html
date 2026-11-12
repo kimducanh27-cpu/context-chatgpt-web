@@ -104,6 +104,7 @@ footer{margin-top:56px;border-top:1px solid var(--line);padding-top:18px;font-si
 <li><strong>V11 — fix test 6 theo test form trên GitHub Pages 12/11: trường nội dung để trống thì chặn Copy, ghi đúng '(chưa có)' mới được coi là không có.</strong></li>
 <li><strong>Bối cảnh:</strong> test form 6/11/12/15 chạy 2026-11-12 07:23–07:26 trên GitHub Pages (kit V10 live): <strong>11 PASS, 12 PASS (cả 4 trường hợp), 15 PASS; 6 FAIL</strong> — để trống duy nhất trường “Quyết định đã chốt” (mọi trường khác đã điền) thì form KHÔNG bắt lỗi: block vẫn render với dòng 14 là “(chưa có)” và nút Copy vẫn bật, trong khi test 6 yêu cầu trường thiếu phải bị bắt trước khi copy.</li>
 <li><strong>V11 chỉ sửa đúng lỗi đó</strong> (Kduu chọn 07:30 12/11): form gate ở Phần 6b thêm luật <strong>CONTENT FIELDS</strong> cho 5 trường nội dung 14–18. Quy ước template KHÔNG đổi — trường không có giá trị thì trong block vẫn viết “(chưa có)”, không bao giờ để trống; khác biệt là <strong>form không tự điền “(chưa có)” thay người dùng</strong>: trường để trống nghĩa là “chưa điền”, chỉ khi người dùng tự ghi đúng chữ “(chưa có)” mới nghĩa là “chặng này thật sự không có”. Test 19 không nằm trong V11.</li>
+<li>Fix nhỏ trong V11 (12/11): tách mục 7 Phần 9 — NEEDS_SOURCE riêng, POSITIVE TEST ở tiêu chí (e).</li>
 </ul>
 </div>
 <div class="warn">
@@ -788,7 +789,7 @@ MẪU 18 TRƯỜNG — điền đúng mẫu này:
 <li>FIRST_FOLD tick sai (fold log đã có block) → không tạo block (ledger check). FIRST_FOLD ticked + ledger empty → warning shown, Copy stays enabled (warning only — the user proceeds on their own confirmation) (fix vòng 2 sau review R2, P2-2).</li>
 <li>Prompt B có xung đột → không tự đoán quyết định thắng.</li>
 <li>Content-field test (viết lại ở V11, test 6): trong form Phần 6b, một trường nội dung (14–18: Quyết định đã chốt, Ràng buộc / quy tắc, Việc đang dở, Dữ kiện nguyên văn, Đã bỏ đi cố ý) để TRỐNG (sau khi trim) thì chặn Copy — không render, Copy disabled, lỗi nêu tên trường. Ghi đúng chữ “(chưa có)” vào trường nội dung là giá trị có chủ đích (“chặng này thật sự không có”) và KHÔNG chặn. Form không được tự điền “(chưa có)” thay người dùng: trường trống nghĩa là “chưa điền”, không phải “không có”. Phạm vi: chỉ 5 trường nội dung — các trường metadata giữ cách xử lý “(chưa có)” riêng, không nằm trong gate này.</li>
-<li>NEEDS_SOURCE test + POSITIVE TEST: hỏi một chi tiết chính xác KHÔNG có trong note mà không có raw → chat mới trả NEEDS_SOURCE, không đoán; hỏi một chi tiết CÓ trong note → chat mới phải trả lời đúng, KHÔNG được trả NEEDS_SOURCE; model lúc nào cũng trả NEEDS_SOURCE thì FAIL.</li>
+<li>NEEDS_SOURCE test: hỏi một chi tiết chính xác KHÔNG có trong note mà không có raw → chat mới trả NEEDS_SOURCE, không đoán.</li>
 <li>Gộp T1→T2: parent/lineage mapping khớp; gộp T2→T3: fidelity loss được ghi nhận.</li>
 <li>Duplicate-fold test (viết lại ở V10, test 9): gửi lại Prompt A cho chặng đã gấp, CÓ dán sổ gấp vào ô SỔ GẤP → model trả đúng <code>ĐÃ GẤP RỒI | Block: &lt;mã block cũ&gt; | Lý do: …</code>, không tạo block; gửi mà KHÔNG dán sổ gấp (và không phải FIRST_FOLD) → model trả đúng <code>THIẾU SỔ GẤP | Lý do: …</code>, không tạo block.</li>
 <li>Packet trộn tier không vượt giới hạn (8 block, ~6.000 từ).</li>
